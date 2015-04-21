@@ -1,11 +1,23 @@
 # RAM-Machine
-RAM Machine Code Interpreter
+##RAM Machine Code Interpreter
 
-This is a Java application allowing to emulate RAM machine. The application provides the environment for writing RAM Machine code, and interprets and executes this code.
+This is a Java application allowing to emulate RAM machine.
 
-The application has functionality of proper highlighting and syntax checking of the code.
+Supported features:
+* Code highlighting
+* Syntax checking
+* Code execution
+  * runing the whole program
+  * step-by-step debug running
+* Extended RAM Machine syntax
+  * support of symbols and strings (*Note:* characters are internally converted to numbers by their character code)
+  * support of labels
+  * support of macros
 
-The executable file: RAM.jar
-Sample RAM Machine Codes: RAMSamples/
+Sample RAM Machine Codes can be found in *RAMSamples/*
 
-For details regarding RAM Machine structure and command syntax see Help (English: help_end.html or Russian: help_rus.html).
+The executable file: *RAM.jar*
+
+For details regarding RAM Machine structure and command syntax see Help:
+* English: *help_eng.html* 
+* Russian: *help_rus.html*.
