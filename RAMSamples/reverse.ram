@@ -1,0 +1,16 @@
+// program reads 10 numbers and writes them in reverse order
+	load =0
+	store 11
+	load =10
+metka1:	read *0
+	sub =1
+	JZERO metka2
+	jump metka1
+metka2:	load 11
+	add =1
+	write *0
+	store 11
+	sub =10
+	JZERO QUIT	
+	jump metka2
+QUIT:	HALT	

@@ -1,0 +1,30 @@
+//  sample code
+
+#macro validMacro // macro start definition, macro name
+	load =999 // command call, simple number symbol (=), number in argument
+	write ='a' // command call, simple number symbol (=), symbol in argument
+validLabel:	load *1 // label definition (local),  reference symbol (*)
+#endmacro	// macro end definition
+	validMacro // macro call
+
+#macro $$$ 	// invalid macro name (illegal symbols in name)
+#macro invalidMacro // invalid macro start definition
+	              // (#endmacro macro expected)
+#endmacro
+#endmacro	// invalid macro end definition
+	// (#macro expected)
+#macro 123 // invalid macro name (must start with letter)
+
+validLabel:	// label definition. Correct!!! Label definition is correct
+	// because label "validLabel" defined above was local
+	jump validLabel // label call
+
+invalidLabel:	// label definition
+invalidLabel:	// invalid label definition (such name already exists)
+
+ 	invalidCommand 159 // unknown command, unknown command argument
+	jump label // invalid argument
+	                    // (label expected)
+	load a // invalid argument (invalid type of argument)
+	halt 2 // invalid argument (excess argument)
+	...!@# // unrecognized structure

@@ -1,0 +1,17 @@
+// simple test of macroses, DISABLED!!!
+#macro print
+	mult =-2
+	write 0
+#endmacro
+	
+	
+	
+	
+	
+	
+	
+	load =5
+	print
+	print
+	print
+	halt

@@ -1,0 +1,573 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+		"http://www.w3.org/TR/html4/loose.dtd">
+<!--suppress ALL -->
+<html>
+<head>
+	<title>RAM help</title>
+</head>
+<body bgcolor="#F0FFFF">
+
+<h3 align="center">Random access memory machine (RAM)</h3>
+
+<h3 align="center">RAM structure</h3>
+<table cellspacing="2">
+    <tr>
+        <th>Element</th>
+        <th>Designation</th>
+		<th>Description</th>
+    </tr>
+	<tr>
+        <td>Input tape</td>
+        <td align="center">x[1],x[2],...,x[n]</td>
+		<td>Contains input data. Data is represented by succession of numbers or symbols</td>
+    </tr>
+	<tr>
+        <td>Output tape</td>
+        <td align="center">y[1],y[2],...,y[n],...</td>
+		<td>Contains output data. Data is represented by succession of symbols and numbers</td>
+    </tr>
+	<tr>
+        <td>Registers</td>
+        <td align="center">...r[-n],...,r[-1],r[0],r[1],...,r[n]...</td>
+		<td>Registers represent memory of machine. Machine stores temporary data in registers while executing algorithm. At the beginning all the memory is uninitialized.
+			Zero register is summator</td>
+    </tr>
+	<tr>
+        <td>Commands</td>
+        <td align="center">None</td>
+		<td>Commands represent the algorithm</td>
+    </tr>
+	
+</table>
+
+<h3 align="center">Command structure</h3>
+[<i><b>label:</b></i>] <b>command_name</b> argument1 argument2 ... argumentN [<i>//comments</i>]<br>
+<br>
+<i><b>Description:</b></i><br>
+<table cellspacing="2">
+    <tr>
+        <td>"[..]"</td>
+        <td>Unnecessary element</td>
+    </tr>
+	<tr>
+        <td>label</td>
+        <td>Any name. Label identifies the line in code. With the help of labels you can "name" lines</td>
+    </tr>
+	<tr>
+        <td>command_name</td>
+        <td>Any legal command (see below)</td>
+    </tr>
+	<tr>
+        <td>argumentN</td>
+        <td>N-th argument of command</td>
+    </tr>
+	<tr>
+        <td>comments</td>
+        <td>Any comments. All symbols in line after double slash (//) are interpreted as comments. Comments are ignored by machine and are only for programmer</td>
+    </tr>
+</table>
+<i><b>Example:</b></i><br>
+<i><b>reading:</b></i> <b>read</b> *0 // <i>reading from input tape</i><br>
+Here "<i><b>reading</b></i>" is name of label, "<b>read</b>" is command, "*0" is argument, and the rest is comments<br>
+<br>
+<i>Note:</i> All legal commands have one or none arguments. So "N-th argument" is only generalization for the case of including in RAM some commands with two or more arguments<br>
+
+<h3 align="center">Commands</h3>
+<table cellspacing="2" align="center">
+	<tr>
+		<td><b>load</b></td>
+		<td>loading into zero register (summator)</td>
+	</tr>
+	<tr>
+		<td><b>store</b></td>
+		<td>storing contents of summator to another register</td>
+	</tr>
+	<tr>
+		<td><b>add</b></td>
+		<td>addition</td>
+	</tr>
+	<tr>
+		<td><b>sub</b></td>
+		<td>subtraction</td>
+	</tr>
+	<tr>
+		<td><b>mult</b></td>
+		<td>multiplication</td>
+	</tr>
+	<tr>
+		<td><b>div</b></td>
+		<td>division</td>
+	</tr>
+	<tr>
+		<td><b>mod</b></td>
+		<td>modulo</td>
+	</tr>
+	<tr>
+		<td><b>jump</b></td>
+		<td>jumping to specified line in code</td>
+	</tr>
+	<tr>
+		<td><b>jzero</b></td>
+		<td>jumping if summator contains 0</td>
+	</tr>
+	<tr>
+		<td><b>jgtz</b></td>
+		<td>jumping if summator contains positive number</td>
+	</tr>
+	<tr>
+		<td><b>read</b></td>
+		<td>reading from input tape</td>
+	</tr>
+	<tr>
+		<td><b>write</b></td>
+		<td>writing number onto output tape</td>
+	</tr>
+	<tr>
+		<td><b>writesym</b></td>
+		<td>writing symbol onto output tape</td>
+	</tr>
+	<tr>
+		<td><b>halt</b></td>
+		<td>finishing program</td>
+	</tr>
+</table>
+
+<br>
+RAM mashine exucutes commands successively line after line unless meets <b>halt</b> - then program finishes, -
+or <b>jump</b>, <b>jzero</b> or <b>jgtz</b> - then jumps to specified line
+
+<h3 align="center">Arguments for commands</h3>
+
+<table cellspacing="2" border="1">
+    <tr>
+        <td><b>Command</b></td>
+        <td><b>Argument</b></td>
+        <td><b>Result</b></td>
+		<td><b>Description</b></td>
+    </tr>
+
+
+	<tr>
+		<td><b>load</b></td>
+		<td>=n</td>
+		<td>r[0] := n</td>
+		<td>Loading number "n" to summator (zero register)</td>
+	</tr>
+	<tr>
+		<td><b>load</b></td>
+		<td>='a'</td>
+		<td>r[0] := code(a)</td>
+		<td>Loading character code of symbol 'a' to summator</td>
+	</tr>
+	<tr>
+		<td><b>load</b></td>
+		<td>n</td>
+		<td>r[0] := r[n]</td>
+		<td>Loading contents of n-th register to summator<br>
+			<i><b>Note:</b></i> If n-th register isn't initialized yet you'll get an error!
+		</td>
+	</tr>
+	<tr>
+		<td><b>load</b></td>
+		<td>'a'</td>
+		<td>r[0] := r[code(a)]</td>
+		<td>Similar to previous operation except that instead of number "n" character code of symbol 'a' is used</td>
+	</tr>
+	<tr>
+		<td><b>load</b></td>
+		<td>*n</td>
+		<td>r[0] := r[r[n]]</td>
+		<td>Here n-th register is interpreted as pointer: watching to contents of n-th register and
+			then going to register, specified by n-th register.
+			Contents of that second register is loading to summator</td>
+	</tr>
+	<tr>
+		<td><b>load</b></td>
+		<td>*'a'</td>
+		<td>r[0] := r[r[code(a)]]</td>
+		<td>Similar to previous operation, but instead of number "n" character code of 'a' is used.</td>
+	</tr>
+
+
+	<tr>
+		<td><b>store</b></td>
+		<td>n</td>
+		<td>r[n] := r[0]</td>
+		<td>Storing the contents of summator to n-th register.</td>
+	</tr>
+	<tr>
+		<td><b>store</b></td>
+		<td>'a'</td>
+		<td>r[code(a)] := r[0]</td>
+		<td>Similar to previous operation, but instead of number "n" character code of 'a' is used.</td>
+	</tr>
+	<tr>
+		<td><b>store</b></td>
+		<td>*n</td>
+		<td>r[r[n]] := r[0]</td>
+		<td>Storing the contents of summator to register specified by n-th register.</td>
+	</tr>
+	<tr>
+		<td><b>store</b></td>
+		<td>*'a'</td>
+		<td>r[r[code(a)]] := r[0]</td>
+		<td>Similar to previous operation, but instead of number "n" character code of 'a' is used.</td>
+	</tr>
+
+
+	<tr>
+		<td><b>add</b></td>
+		<td>=n</td>
+		<td>r[0] := r[0]+n</td>
+		<td>Adding number "n" to contents of summator (the result is being stored in summator)</td>
+	</tr>
+	<tr>
+		<td><b>add</b></td>
+		<td>='a'</td>
+		<td>r[0] := r[0]+code(a)</td>
+		<td>Similar to previous operation, but instead of number "n" character code of 'a' is used.</td>
+	</tr>
+	<tr>
+		<td><b>add</b></td>
+		<td>n</td>
+		<td>r[0] := r[0]+r[n]</td>
+		<td>Adding contents of n-th register to contents of summator.</td>
+	</tr>
+	<tr>
+		<td><b>add</b></td>
+		<td>'a'</td>
+		<td>r[0] := r[0]+r[code(a)]</td>
+		<td>Similar to previous operation, but instead of number "n" character code of 'a' is used.</td>
+	</tr>
+	<tr>
+		<td><b>add</b></td>
+		<td>*n</td>
+		<td>r[0] := r[0]+r[r[n]]</td>
+		<td>Adding contents of register specified by n-th register to contents of summator.</td>
+	</tr>
+	<tr>
+		<td><b>add</b></td>
+		<td>*'a'</td>
+		<td>r[0] := r[0]+r[code(a)]</td>
+		<td>Similar to previous operation, but instead of number "n" character code of 'a' is used.</td>
+	</tr>
+
+
+	<tr>
+		<td><b>sub</b></td>
+		<td>=n</td>
+		<td>r[0] := r[0]-n</td>
+		<td>Subtracting number "n" from contents of summator.</td>
+	</tr>
+	<tr>
+		<td><b>sub</b></td>
+		<td>='a'</td>
+		<td>r[0] := r[0]-code(a)</td>
+		<td>Similar to previous operation, but instead of number "n" character code of 'a' is used.</td>
+	</tr>
+	<tr>
+		<td><b>sub</b></td>
+		<td>n</td>
+		<td>r[0] := r[0]-r[n]</td>
+		<td>Subtracting contents of n-th register from contents of summator.</td>
+	</tr>
+	<tr>
+		<td><b>sub</b></td>
+		<td>'a'</td>
+		<td>r[0] := r[0]-r[code(a)]</td>
+		<td>Similar to previous operation, but instead of number "n" character code of 'a' is used.</td>
+	</tr>
+	<tr>
+		<td><b>sub</b></td>
+		<td>*n</td>
+		<td>r[0] := r[0]-r[r[n]]</td>
+		<td>Subtracting contents of register specified by n-th register from contents of summator.</td>
+	</tr>
+	<tr>
+		<td><b>sub</b></td>
+		<td>*'a'</td>
+		<td>r[0] := r[0]-r[r[code(a)]]</td>
+		<td>Similar to previous operation, but instead of number "n" character code of 'a' is used.</td>
+	</tr>
+
+
+	<tr>
+		<td><b>mult</b></td>
+		<td>=n</td>
+		<td>r[0] := r[0]*n</td>
+		<td>Multiplying the contents of summator by number "n"</td>
+	</tr>
+	<tr>
+		<td><b>mult</b></td>
+		<td>='a'</td>
+		<td>r[0] := r[0]*code(a)</td>
+		<td>Similar to previous operation, but instead of number "n" character code of 'a' is used.</td>
+	</tr>
+	<tr>
+		<td><b>mult</b></td>
+		<td>n</td>
+		<td>r[0] := r[0]*r[n]</td>
+		<td>Multiplying the contents of summator by contents of n-th register</td>
+	</tr>
+	<tr>
+		<td><b>mult</b></td>
+		<td>'a'</td>
+		<td>r[0] := r[0]*r[code(a)]</td>
+		<td>Similar to previous operation, but instead of number "n" character code of 'a' is used.</td>
+	</tr>
+	<tr>
+		<td><b>mult</b></td>
+		<td>*n</td>
+		<td>r[0] := r[0]*r[r[n]]</td>
+		<td>Multiplying the contents of summator by contents of register specified by n-th register</td>
+	</tr>
+	<tr>
+		<td><b>mult</b></td>
+		<td>*'a'</td>
+		<td>r[0] := r[0]*r[r[code(a)]]</td>
+		<td>Similar to previous operation, but instead of number "n" character code of 'a' is used.</td>
+	</tr>
+
+
+	<tr>
+		<td><b>div</b></td>
+		<td>=n</td>
+		<td>r[0] := r[0]/n</td>
+		<td>Integer part of division the contents of summator by number "n" is being stored to summator<br>
+			<i><b>Note:</b></i> Division by zero results in error
+		</td>
+	</tr>
+	<tr>
+		<td><b>div</b></td>
+		<td>='a'</td>
+		<td>r[0] := r[0]/code(a)</td>
+		<td>Similar to previous operation, but instead of number "n" character code of 'a' is used.</td>
+	</tr>
+	<tr>
+		<td><b>div</b></td>
+		<td>n</td>
+		<td>r[0] := r[0]/r[n]</td>
+		<td>Integer part of division the contents of summator by contents of n-th register
+			is being stored to summator</td>
+	</tr>
+	<tr>
+		<td><b>div</b></td>
+		<td>'a'</td>
+		<td>r[0] := r[0]/r[code(a)]</td>
+		<td>Similar to previous operation, but instead of number "n" character code of 'a' is used.</td>
+	</tr>
+	<tr>
+		<td><b>div</b></td>
+		<td>*n</td>
+		<td>r[0] := r[0]/r[r[n]]</td>
+		<td>Integer part of division the contents of summator by contents of register specified by n-th register is
+			being stored to summator</td>
+	</tr>
+	<tr>
+		<td><b>div</b></td>
+		<td>*'a'</td>
+		<td>r[0] := r[0]/r[r[code(a)]]</td>
+		<td>Similar to previous operation, but instead of number "n" character code of 'a' is used.</td>
+	</tr>
+
+
+	<tr>
+		<td><b>mod</b></td>
+		<td>=n</td>
+		<td>r[0] := r[0]%n</td>
+		<td>Residue of division the contents of summator by number "n" is being stored to summator</td>
+	</tr>
+	<tr>
+		<td><b>mod</b></td>
+		<td>='a'</td>
+		<td>r[0] := r[0]%code(a)</td>
+		<td>Similar to previous operation, but instead of number "n" character code of 'a' is used.</td>
+	</tr>
+	<tr>
+		<td><b>mod</b></td>
+		<td>n</td>
+		<td>r[0] := r[0]%r[n]</td>
+		<td>Residue of division the contents of summator by contents of n-th register
+			is being stored to summator</td>
+	</tr>
+	<tr>
+		<td><b>mod</b></td>
+		<td>'a'</td>
+		<td>r[0] := r[0]%r[code(a)]</td>
+		<td>Similar to previous operation, but instead of number "n" character code of 'a' is used.</td>
+	</tr>
+	<tr>
+		<td><b>mod</b></td>
+		<td>*n</td>
+		<td>r[0] := r[0]%r[r[n]]</td>
+		<td>Residue of division the contents of summator by contents of register specified by n-th register is
+			being stored to summator</td>
+	</tr>
+	<tr>
+		<td><b>mod</b></td>
+		<td>*'a'</td>
+		<td>r[0] := r[0]%r[r[code(a)]]</td>
+		<td>Similar to previous operation, but instead of number "n" character code of 'a' is used.</td>
+	</tr>
+
+
+	<tr>
+		<td><b>read</b></td>
+		<td>n</td>
+		<td>r[n] := x[i], i:=i+1</td>
+		<td>Reading number (or character code) from input tape and storing it to n-th register (the read head moves to next position of input tape)<br>
+			<i><b>Note:</b></i> By default, if read head gets to the end of input tape then 0 is being stored to n-th register.
+			So it looks like input tape is infinite and all tape after the last input number is filled by zeros.
+		</td>
+	</tr>
+	<tr>
+		<td><b>read</b></td>
+		<td>'a'</td>
+		<td>r[code(a)] := x[i], i:=i+1</td>
+		<td>Similar to previous operation, but instead of number "n" character code of 'a' is used.</td>
+	</tr>
+	<tr>
+		<td><b>read</b></td>
+		<td>*n</td>
+		<td>r[r[n]] := x[i], i:=i+1</td>
+		<td>Reading number (or character code) from input tape and storing it to register specified by n-th register (the read head moves to next position of input tape)</td>
+	</tr>
+	<tr>
+		<td><b>read</b></td>
+		<td>*'a'</td>
+		<td>r[r[code(a)]] := x[i], i:=i+1</td>
+		<td>Similar to previous operation, but instead of number "n" character code of 'a' is used.<br></td>
+	</tr>
+
+	
+	<tr>
+		<td><b>write</b></td>
+		<td>=n</td>
+		<td>y[j] := n, j:=j+1</td>
+		<td>Writing number "n" to the output tape (the write head moves to next position of output tape)</td>
+	</tr>
+	<tr>
+		<td><b>write</b></td>
+		<td>='a'</td>
+		<td>y[j] := code(a), j:=j+1</td>
+		<td>Similar to previous operation, but instead of number "n" character code of 'a' is used.</td>
+	</tr>
+	<tr>
+		<td><b>write</b></td>
+		<td>n</td>
+		<td>y[j] := r[n], j:=j+1</td>
+		<td>Writing contents of n-th register to the output tape (the write head moves to next position of output tape)</td>
+	</tr>
+	<tr>
+		<td><b>write</b></td>
+		<td>'a'</td>
+		<td>y[j] := r[code(a)], j:=j+1</td>
+		<td>Similar to previous operation, but instead of number "n" character code of 'a' is used.</td>
+	</tr>
+	<tr>
+		<td><b>write</b></td>
+		<td>*n</td>
+		<td>y[j] := r[r[n]], j:=j+1</td>
+		<td>Writing contents of register specified by n-th register to the output tape (the write head moves to next position of output tape)</td>
+	</tr>
+	<tr>
+		<td><b>write</b></td>
+		<td>*'a'</td>
+		<td>y[j] := r[r[code(a)]], j:=j+1</td>
+		<td>Similar to previous operation, but instead of number "n" character code of 'a' is used.</td>
+	</tr>
+
+
+	<tr>
+		<td><b>writesym</b></td>
+		<td>=n</td>
+		<td>y[j] := char(n), j:=j+1</td>
+		<td>Writing symbol with character code n to the output tape (the write head moves to next position of output tape)<br>
+			<i><b>Note:</b></i> If "n" is negative or too large (>65535) this operation will result in error 
+		</td>
+	</tr>
+	<tr>
+		<td><b>writesym</b></td>
+		<td>='a'</td>
+		<td>y[j] := 'a', j:=j+1</td>
+		<td>Writing symbol 'a' to the output tape (the write head moves to next position of output tape)</td>
+	</tr>
+	<tr>
+		<td><b>writesym</b></td>
+		<td>n</td>
+		<td>y[j] := char(r[n]), j:=j+1</td>
+		<td>Writing symbol with character code stored in n-th register to the output tape (the write head moves to next position of output tape)</td>
+	</tr>
+	<tr>
+		<td><b>writesym</b></td>
+		<td>'a'</td>
+		<td>y[j] := char(r[code('a')]), j:=j+1</td>
+		<td>Similar to previous operation, but instead of number "n" character code of 'a' is used.</td>
+	</tr>
+	<tr>
+		<td><b>writesym</b></td>
+		<td>*n</td>
+		<td>y[j] := char(r[r[n]]), j:=j+1</td>
+		<td>Writing symbol with character code stored in register specified by n-th register to the output tape (the write head moves to next position of output tape)</td>
+	</tr>
+	<tr>
+		<td><b>writesym</b></td>
+		<td>*'a'</td>
+		<td>y[j] := char(r[r[code('a')]]), j:=j+1</td>
+		<td>Similar to previous operation, but instead of number "n" character code of 'a' is used.</td>
+	</tr>
+	
+
+	<tr>
+		<td><b>jump</b></td>
+		<td>m</td>
+		<td>goto m</td>
+		<td>Going to the line in code specified by label m</td>
+	</tr>
+	<tr>
+		<td><b>jzero</b></td>
+		<td>m</td>
+		<td>if r[0]=0 goto m else goto next</td>
+		<td>If summator contains 0 then going to the line in code specified by label m, otherwise - to the next line in code</td>
+	</tr>
+	<tr>
+		<td><b>jgtz</b></td>
+		<td>m</td>
+		<td>if r[0]>0 goto m else goto next</td>
+		<td>If summator contains positive number then going to the line in code specified by label m, otherwise - to the next line in code</td>
+	</tr>
+
+	<tr>
+		<td><b>halt</b></td>
+		<td></td>
+		<td>finish</td>
+		<td>Finishing program: further commands won't be executed</td>
+	</tr>
+
+</table>
+
+<h3 align="center">Input tape</h3>
+Input tape corresponds succession of numbers. But in this application it's possible to include in input tape also symbols and even strings (the arrays of symbols).
+RAM firstly converts all input into succession of numbers and then works with this succession.<br>
+To specify input tape you must enter a set of expressions delimited by any amount of spaces, tabulations or end-of-line symbols.<br>
+Each expression must have one of the following forms:<br>
+<table cellspacing="2" border="1">
+	<tr>
+		<td><b>Form</b></td>
+		<td><b>Examples</b></td>
+	</tr>
+	<tr>
+		<td>Number</td>
+		<td>1, 3, 155, etc.</td>
+	</tr>
+	<tr>
+		<td>Symbol enclosed by apostrophes (')</td>
+		<td>'a', '7', '&', etc.</td>
+	</tr>
+	<tr>
+		<td>String (an array of symbols) enclosed by quotes (")</td>
+		<td>"Hello!", "abc123!@#", "2+2=4", etc.</td>
+	</tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,7 @@
+// program reads string from input tape and writes it to the output
+readAgain:	read 0
+	jzero quit
+	writesym 0
+	jump readAgain
+
+quit:	halt

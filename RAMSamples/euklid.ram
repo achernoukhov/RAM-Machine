@@ -1,0 +1,43 @@
+// calculating of greatest common divisor using continued division (Euclid) algorithm
+// input: two numbers
+// output:	 if both numbers are positive - gratest common divisor
+//	otherwise - nothing
+	read 0
+	jgtz store1
+	jump quit
+store1:	store 2
+	
+	read 0
+	jgtz store2
+	jump quit
+store2:	store 3
+	
+while1:	load 2
+	sub 3
+	store 1
+	jgtz next1
+	jzero print2
+	jump while2
+	
+while2:	load 3
+	sub 2
+	store 1
+	jgtz next2
+	jzero print1
+	jump while1
+	
+next1:	load 1
+	store 2
+	jump while1	
+	
+next2:	load 1
+	store 3
+	jump while2
+	
+print1:	write 2
+	halt
+	
+print2:	write 3
+	halt
+	
+quit:	halt

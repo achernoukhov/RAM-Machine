@@ -1,0 +1,410 @@
+package ram_pack.ram_choose_highlight_styles;
+
+import ram_pack.ram_check_and_convert.SyntaxHighlightWorker;
+import ram_pack.ram_check_and_convert.CodeSubstringType;
+import ram_pack.ram_core.RAM;
+import ram_pack.ram_UndoDocument.MyDocument;
+
+import javax.swing.*;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.TreeMap;
+import java.util.Scanner;
+import java.io.*;
+import java.net.URL;
+
+import sun.font.FontManager;
+
+public class ChooseHighlightStylesPanel extends JPanel
+{
+	private static String SAMPLE_CODE_FILE_NAME = "sample_code_eng.ram";
+	private static String USER_SETTINGS_FILE_NAME = "user_settings.ini";
+	private JColorChooser colorChooser;
+	private TreeMap<String, ColoredFont> stylesMap =new TreeMap<String,ColoredFont>();
+	private TreeMap<CodeSubstringType, ColoredFont> highlightStyles;
+	private TreeMap<String, ColoredFont> oldStylesMap;
+	private JComboBox highlightComboBox;
+	private JComboBox fontComboBox;
+
+	private JPanel chooserPanel;
+	private JCheckBox cbBold=new JCheckBox("Bold");
+	private JCheckBox cbItalic=new JCheckBox("Italic");
+	private ColorChangeListener colorChangeListener=new ColorChangeListener();
+	private JDialog parentDialog ;
+	private RAM ram;
+    private MyDocument doc;
+
+	protected class ColorChangeListener implements ChangeListener
+	{
+		ColorChangeListener()
+		{
+			super();
+		}
+
+		public void stateChanged(ChangeEvent e)
+		{
+			changeColor();
+		}
+	}
+
+	protected class StyleChangeListener implements ItemListener
+	{
+		public StyleChangeListener()
+		{
+			super();
+		}
+
+		public void itemStateChanged(ItemEvent e)
+		{
+			JCheckBox cb=(JCheckBox)e.getItemSelectable();
+			if (cb==cbBold)
+			{
+				changeBold();
+			}
+			if (cb==cbItalic)
+			{
+				changeItalic();
+			}
+		}
+	}
+
+	protected class ComboChangeListener implements ActionListener
+	{
+		ComboChangeListener()
+		{
+			super();
+		}
+
+		public void actionPerformed(ActionEvent e)
+		{
+			resetChoosers();
+		}
+	}
+	
+	public ChooseHighlightStylesPanel(JDialog parent,TreeMap<CodeSubstringType,ColoredFont> initialHighlightStyles,RAM ram)
+	{
+		super(new BorderLayout());
+		this.ram = ram;
+		parentDialog=parent;
+		parentDialog.addWindowListener(new WindowListener()
+		{
+			public void windowOpened(WindowEvent e)
+			{
+				// nothing to do
+			}
+
+			public void windowIconified(WindowEvent e)
+			{
+				// nothing to do
+			}
+
+			public void windowDeiconified(WindowEvent e)
+			{
+				// nothing to do
+			}
+
+			public void windowActivated(WindowEvent e)
+			{
+				// nothing to do
+			}
+
+			public void windowDeactivated(WindowEvent e)
+			{
+				// nothing to do
+			}
+
+			public void windowClosing(WindowEvent e)
+			{
+				performCancel();
+			}
+
+			public void windowClosed(WindowEvent e)
+			{
+				// nothing to do
+			}
+		});
+		highlightStyles =initialHighlightStyles;
+		oldStylesMap = convertToStylesMap(initialHighlightStyles);
+		setStylesMap(oldStylesMap);
+
+		setLayout(new BoxLayout(this,BoxLayout.PAGE_AXIS));
+
+		JPanel bigPanel=new JPanel(new BorderLayout());
+
+		JPanel samplePanel=new JPanel();
+		samplePanel.setLayout(new BorderLayout());
+
+		highlightComboBox =new JComboBox(stylesMap.keySet().toArray());
+		highlightComboBox.addActionListener(new ComboChangeListener());
+		samplePanel.add(highlightComboBox,BorderLayout.PAGE_START);
+
+		JPanel textPanel=new JPanel(new BorderLayout());
+
+        doc= new MyDocument();
+		String sampleCode = readSampleCode(SAMPLE_CODE_FILE_NAME);
+		JTextPane textPane=new JTextPane(doc);
+		textPane.setText(sampleCode);
+		textPane.setEditable(false);
+        doc.splitTextCharacter(0,sampleCode.length()); // for highlights
+		textPanel.add(textPane,BorderLayout.CENTER);
+
+		JScrollPane textScrollPane=new JScrollPane(textPanel);
+
+		samplePanel.setPreferredSize(new Dimension(500,500));
+		samplePanel.add(textScrollPane,BorderLayout.CENTER);
+
+		bigPanel.add(samplePanel, BorderLayout.CENTER);
+
+		chooserPanel=new JPanel();
+		//chooserPanel.setLayout(new BoxLayout(chooserPanel,BorderLayout.PAGE_AXIS));
+		chooserPanel.setLayout(new BorderLayout());
+
+		JPanel fontPanel = new JPanel(new BorderLayout());
+		fontPanel.setBorder(BorderFactory.createTitledBorder("Font"));
+
+		fontComboBox = new JComboBox(FontManager.getFontNamesFromPlatform());
+		fontPanel.add(fontComboBox);
+
+		JPanel stylePanel =new JPanel();
+		stylePanel.setLayout(new BoxLayout(stylePanel,BoxLayout.PAGE_AXIS));
+		stylePanel.setBorder(BorderFactory.createTitledBorder("Style"));
+
+		cbBold.addItemListener(new StyleChangeListener());
+		cbItalic.addItemListener(new StyleChangeListener());
+		stylePanel.add(cbBold);
+		stylePanel.add(cbItalic);
+
+		//fontPanel.add(stylePanel);
+
+		chooserPanel.add(stylePanel,BorderLayout.SOUTH);
+		chooserPanel.add(fontPanel,BorderLayout.NORTH);
+
+		bigPanel.add(chooserPanel,BorderLayout.EAST);
+
+		add(bigPanel,BorderLayout.CENTER);
+
+		JPanel buttonPanel=new JPanel(new FlowLayout());
+		JButton btOK=new JButton("OK");
+		btOK.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				performOK();
+			}
+		});
+		JButton btCancel=new JButton("Cancel");
+		btCancel.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				performCancel();
+			}
+		});
+		JButton btReset=new JButton("Reset");
+		btReset.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				performReset();
+			}
+		});
+		buttonPanel.add(btOK);
+		buttonPanel.add(btCancel);
+		buttonPanel.add(btReset);
+
+		add(buttonPanel, BorderLayout.PAGE_END);
+		
+		newColorChooser();
+		runHighlights();
+		resetChoosers();
+	}
+
+	// the action on "Bold checkbox state changed" event
+	private void changeBold()
+	{
+		String key=(String) highlightComboBox.getSelectedItem();
+		ColoredFont coloredFont= stylesMap.get(key);
+		coloredFont.setBold(cbBold.isSelected());
+		//colorChooser.getPreviewPanel().setFont(coloredFont);
+		runHighlights();
+	}
+
+	// the action on "Italic checkbox state changed" event
+	private void changeItalic()
+	{
+		String key=(String) highlightComboBox.getSelectedItem();
+		ColoredFont coloredFont= stylesMap.get(key);
+		coloredFont.setItalic(cbItalic.isSelected());
+		//colorChooser.getPreviewPanel().setFont(coloredFont);
+		runHighlights();
+	}
+
+	// the action on "Color changed" event
+	private void changeColor()
+	{
+		String key=(String) highlightComboBox.getSelectedItem();
+		ColoredFont coloredFont= stylesMap.get(key);
+		coloredFont.setColor(colorChooser.getColor());
+		runHighlights();
+	}
+
+	// creates new color chooser
+	private void newColorChooser()
+	{
+		String item=(String) highlightComboBox.getSelectedItem();
+		ColoredFont coloredFont= stylesMap.get(item);
+		colorChooser = new JColorChooser(coloredFont.getColor());
+		colorChooser.setBorder(BorderFactory.createTitledBorder("Choose color for ["+item+"]"));
+		colorChooser.getSelectionModel().addChangeListener(colorChangeListener);
+		colorChooser.getSelectionModel();
+		//colorChooser.getPreviewPanel().setFont(coloredFont);
+		//chooserPanel.add(colorChooser,0);
+		chooserPanel.add(colorChooser,BorderLayout.CENTER);
+		this.validate();
+	}
+
+	// refreshes the state of colorChooser
+	private void resetColorChooser()
+	{
+		chooserPanel.remove(colorChooser);
+		newColorChooser();
+	}
+
+	// refreshes the state of styleChooser
+	private void resetStyleChooser()
+	{
+		String item=(String) highlightComboBox.getSelectedItem();
+		cbBold.setSelected(stylesMap.get(item).isBold());
+		cbItalic.setSelected(stylesMap.get(item).isItalic());
+		this.validate();
+	}
+
+	// refreshes the state of choosers
+	private void resetChoosers()
+	{
+		resetStyleChooser();
+		resetColorChooser();
+	}
+
+	// the action on "OK button pressed" event
+	private void performOK()
+	{
+		saveSettings(stylesMap,USER_SETTINGS_FILE_NAME);
+		parentDialog.setVisible(false);
+	}
+
+	// the action on "Cancel button pressed" event
+	private void performCancel()
+	{
+		stylesMap =null;
+		parentDialog.setVisible(false);
+	}
+
+	// the action on "Reset button pressed" event
+	private void performReset()
+	{
+		setStylesMap(oldStylesMap);
+		resetChoosers();
+		runHighlights();
+	}
+
+	// runs highlighting of the sample code with the styles currently chosen by user
+	private void runHighlights()
+	{
+		SyntaxHighlightWorker syntaxHighlightWorker;
+		syntaxHighlightWorker=new SyntaxHighlightWorker(ram,doc, convertToHighlightStyles(stylesMap));
+		syntaxHighlightWorker.execute();
+	}
+
+	// public getter for chosen by user styles
+	public TreeMap<CodeSubstringType,ColoredFont> getHighlightStyles()
+	{
+		return convertToHighlightStyles(stylesMap);
+	}
+
+	private void setStylesMap(TreeMap<String, ColoredFont> initialAttributeMap)
+	{
+		stylesMap =new TreeMap<String,ColoredFont>();
+		for (String key: initialAttributeMap.keySet())
+		{
+			stylesMap.put(key,new ColoredFont(initialAttributeMap.get(key))); // копируем, но создавая новые ссылки
+		}
+	}
+
+	// converts initialAttributeTypes into format used only in this panel
+	private TreeMap<String,ColoredFont> convertToStylesMap(TreeMap<CodeSubstringType,ColoredFont> initialAttributeTypes)
+	{
+		TreeMap<String,ColoredFont> attributeMap=new TreeMap<String,ColoredFont>();
+		for (CodeSubstringType type: initialAttributeTypes.keySet())
+		{
+			ColoredFont font=initialAttributeTypes.get(type);
+			if (font!=null)
+				attributeMap.put(font.getName(),initialAttributeTypes.get(type));
+		}
+		return attributeMap;
+	}
+
+	// converts attributeMap into format, which is used for highlighting
+	private TreeMap<CodeSubstringType,ColoredFont> convertToHighlightStyles(TreeMap<String,ColoredFont> attributeMap)
+	{
+		if (attributeMap==null)
+			return null;
+		TreeMap<CodeSubstringType,ColoredFont> tempHighlightStyles=new TreeMap<CodeSubstringType,ColoredFont>(highlightStyles);
+		for (CodeSubstringType type: highlightStyles.keySet())
+		{
+			ColoredFont font=tempHighlightStyles.get(type);
+			if (font!=null)
+			{
+				tempHighlightStyles.remove(type);
+				tempHighlightStyles.put(type,attributeMap.get(font.getName()));
+			}
+		}
+		return tempHighlightStyles;
+	}
+
+	// reads sample code to display on the left of this panel from file
+	private String readSampleCode(String fileName)
+	{
+		String absoluteFileName="";
+		String sampleCode="";
+		try
+		{
+			URL url=ChooseHighlightStylesPanel.class.getResource(fileName);
+			absoluteFileName=url.getFile();
+			Scanner inputFileScanner;
+			inputFileScanner=new Scanner(url.openStream());
+			while(inputFileScanner.hasNextLine())
+				sampleCode+=inputFileScanner.nextLine()+"\n";
+			inputFileScanner.close();
+		}
+		catch (IOException e)
+		{
+			sampleCode="<Error: Can't open sample code file: "+absoluteFileName+">";
+		}
+		return sampleCode;
+	}
+
+	// saves all highlight styles chosen by user to file
+	private void saveSettings(TreeMap<String,ColoredFont> attributeMap, String fileName)
+	{
+		TreeMap<CodeSubstringType,ColoredFont> highlightStyles = convertToHighlightStyles(attributeMap);
+		try
+		{
+			File settingsFile = new File(fileName);
+			FileWriter fileWriter=new FileWriter(settingsFile);
+			for (CodeSubstringType type: highlightStyles.keySet())
+			{
+				ColoredFont font = highlightStyles.get(type);
+				if (font!=null)
+					fileWriter.write(type+"\t"+"["+font.getName()+"]\t"+font.getStyle()+"\t"+font.getColor().getRGB()+"\n");
+			}
+			fileWriter.close();
+		}
+		catch (IOException e)
+		{
+			// do nothing
+		}
+	}
+}

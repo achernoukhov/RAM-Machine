@@ -1,0 +1,22 @@
+// Calculation of factorial
+// input:  positive number N
+// output: factorials of all numbers from 1 to N
+//  PS. If N is less than 1 then output is number 1
+	read 3
+	load =1
+	store 2
+	store 1
+mult:	
+	load 2
+	mult 1
+	store 2
+	write 2
+	
+	load 1
+	add =1
+	store 1	
+	sub 3
+	jgtz exit
+	jump mult
+exit:	
+	halt

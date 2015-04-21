@@ -1,0 +1,8 @@
+// this program writes successive numbers from 0 to infinity onto output tape
+// it inflicts memory overflow that makes program not responding
+	load =0
+writeAgain:	write 0
+	add =1
+	jump writeAgain
+
+quit:	halt

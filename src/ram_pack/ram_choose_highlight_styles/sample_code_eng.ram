@@ -1,0 +1,17 @@
+//  sample code
+
+	load =999 // command call, simple number symbol (=), number in argument
+	write ='a' // command call, simple number symbol (=), symbol in argument
+	load *1 // reference symbol (*)
+
+validLabel:	// label definition
+	jump validLabel // label call
+
+invalidLabel:	// label definition
+invalidLabel:	// invalid label definition (such name already exists)
+
+ 	invalidCommand 159 // unknown command, unknown command argument
+	jump label // invalid argument (label expected)
+	load a // invalid argument (invalid type of argument)
+	halt 2 // invalid argument (excess argument)
+	...!@# // unrecognized structure
