@@ -10,7 +10,7 @@ Supported features:
   * runing the whole program
   * step-by-step debug running
 * Extended RAM Machine syntax
-  * support of symbols and strings (*Note:* characters are internally converted to numbers by their character code)
+  * support of symbols and strings (*Note:* characters are internally converted to numbers according to their character codes)
   * support of labels
   * support of macros
 
