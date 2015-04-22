@@ -25,8 +25,9 @@ For details regarding RAM Machine structure and command syntax see Help:
 Below are couple of screenshots from the program:
 
 #### 1. Code highlighting example.
-A sample code demonstrating various syntax highlighting elements
+A sample code demonstrating various syntax highlighting elements <br><br>
 ![Code highlighting example](./img/highlights.PNG?raw=true "Code highlighting example")
+
 #### 2. Step-by-step exacution example.
-A demonstration of execution "factorial" program step-by-step.
+A demonstration of execution "factorial" program step-by-step.<br><br>
 ![Step-by-step execution example](./img/step-by-step.PNG?raw=true "Step-by-step execution example")
