@@ -14,10 +14,19 @@ Supported features:
   * support of labels
   * support of macros
 
-Sample RAM Machine Codes can be found in *RAMSamples/*
+Sample RAM Machine Codes can be found under *./RAMSamples*
 
 The executable file: *RAM.jar*
 
 For details regarding RAM Machine structure and command syntax see Help:
 * English: *help_eng.html* 
 * Russian: *help_rus.html*.
+
+Below are couple of screenshots from the program:
+
+#### 1. Code highlighting example.
+A sample code demonstrating various syntax highlighting elements
+![Code highlighting example](./img/highlights.PNG?raw=true "Code highlighting example")
+#### 2. Step-by-step exacution example.
+A demonstration of execution "factorial" program step-by-step.
+![Step-by-step execution example](./img/step-by-step.PNG?raw=true "Step-by-step execution example")
